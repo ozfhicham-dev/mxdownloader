@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Download, Shield } from 'lucide-react';
+import { Download } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -38,7 +38,6 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Disclaimer & Copyright */}
         <div className="pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="max-w-3xl text-slate-500 leading-relaxed">
             <p>
@@ -47,18 +46,6 @@ export function Footer() {
             <p className="mt-1 text-[11px] text-slate-400">
               Disclaimer: mxdownloader is an independent media retrieval tool designed to download public videos and convert audio for fair-use personal archiving. We do not host or archive copyrighted media files on our servers. All trademarks belong to their respective owners.
             </p>
-          </div>
-
-          {/* Discreet Admin Entrance */}
-          <div className="flex items-center gap-4 shrink-0">
-            <Link
-              href="/secretadmin2026here"
-              className="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-slate-700 transition-colors"
-              title="Admin Portal"
-            >
-              <Shield className="w-3.5 h-3.5" />
-              <span>Admin Portal</span>
-            </Link>
           </div>
         </div>
       </div>

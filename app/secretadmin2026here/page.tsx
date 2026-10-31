@@ -56,8 +56,8 @@ export default function SecretAdminPage() {
     }
     return null;
   });
-  const [username, setUsername] = useState('admin');
-  const [password, setPassword] = useState('mxadmin2026');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null);
@@ -85,7 +85,6 @@ export default function SecretAdminPage() {
     }
   }, []);
 
-  // Fetch stats asynchronously whenever an active session token is present
   useEffect(() => {
     let isCancelled = false;
     if (token) {
@@ -157,14 +156,13 @@ export default function SecretAdminPage() {
       const res = await fetch(chunkPath);
       const text = await res.text();
       setXmlContent(text.substring(0, 1500) + (text.length > 1500 ? '\n... [truncated for display]' : ''));
-    } catch (err) {
+    } catch {
       setXmlContent('Failed to fetch XML');
     } finally {
       setXmlLoading(false);
     }
   };
 
-  // Sample programmatic URLs for explorer
   const samplePseoItems = [
     { slug: 'facebook-video-downloader', title: 'Facebook Video Downloader 4K', cat: 'Facebook' },
     { slug: 'facebook-reels-downloader', title: 'Facebook Reels Downloader Full HD', cat: 'Facebook' },
@@ -188,7 +186,6 @@ export default function SecretAdminPage() {
 
   return (
     <div className="min-h-screen bg-slate-100/70 text-slate-900 font-sans">
-      {/* Admin Top Navigation */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -198,9 +195,6 @@ export default function SecretAdminPage() {
             <div>
               <span className="font-extrabold text-slate-900 tracking-tight text-sm">
                 mxdownloader <span className="text-emerald-600 font-semibold">Admin Panel</span>
-              </span>
-              <span className="hidden sm:inline-block ml-2 text-[11px] font-mono text-slate-400">
-                /secretadmin2026here
               </span>
             </div>
           </div>
@@ -227,20 +221,18 @@ export default function SecretAdminPage() {
         </div>
       </header>
 
-      {/* Main Content Body */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {!token ? (
-          /* Sleek Light-Mode Admin Login Form */
           <div className="max-w-md mx-auto my-12 bg-white rounded-2xl border border-slate-200/90 shadow-xl p-6 sm:p-8">
             <div className="text-center mb-6">
               <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl mx-auto flex items-center justify-center mb-3">
                 <Lock className="w-6 h-6" />
               </div>
               <h1 className="text-xl font-bold text-slate-900">
-                Secret Admin Gateway
+                Admin Gateway
               </h1>
               <p className="mt-1 text-xs text-slate-500">
-                Authorized access only. Protected with modular authentication & lockout safeguards.
+                Authorized access only.
               </p>
             </div>
 
@@ -269,6 +261,7 @@ export default function SecretAdminPage() {
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Enter username"
                     required
                     className="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors"
                   />
@@ -277,7 +270,7 @@ export default function SecretAdminPage() {
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Secret Admin Password
+                  Admin Password
                 </label>
                 <div className="relative">
                   <Key className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
@@ -285,6 +278,7 @@ export default function SecretAdminPage() {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter password"
                     required
                     className="w-full pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-emerald-500 focus:bg-white transition-colors"
                   />
@@ -306,26 +300,9 @@ export default function SecretAdminPage() {
                 )}
               </button>
             </form>
-
-            {/* Dev Quick-Help Box */}
-            <div className="mt-6 p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-[11px] text-slate-600 space-y-1">
-              <div className="font-semibold text-slate-800 flex items-center justify-between">
-                <span>Default Dev Credentials</span>
-                <span className="font-mono text-[10px] text-emerald-700 bg-emerald-100/70 px-1.5 py-0.5 rounded">
-                  Modular Mock Provider
-                </span>
-              </div>
-              <p>User: <code className="font-mono text-slate-900 bg-slate-200 px-1 py-0.5 rounded">admin</code></p>
-              <p>Pass: <code className="font-mono text-slate-900 bg-slate-200 px-1 py-0.5 rounded">mxadmin2026</code></p>
-              <p className="text-slate-400 pt-1 text-[10px]">
-                Ready for PostgreSQL credentials injection via <code className="font-mono">DATABASE_URL</code>.
-              </p>
-            </div>
           </div>
         ) : (
-          /* Authenticated Admin Dashboard */
           <div className="space-y-6">
-            {/* Top Stat Ribbon */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="p-5 bg-white rounded-xl border border-slate-200 shadow-xs">
                 <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
@@ -380,7 +357,6 @@ export default function SecretAdminPage() {
               </div>
             </div>
 
-            {/* Dashboard Tab Bar */}
             <div className="bg-white rounded-xl border border-slate-200 p-1 flex flex-wrap gap-1">
               {[
                 { id: 'overview', label: 'Overview & Sitemaps', icon: Globe },
@@ -406,7 +382,6 @@ export default function SecretAdminPage() {
               })}
             </div>
 
-            {/* TAB 1: Overview & Sitemaps Inspector */}
             {activeTab === 'overview' && (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-6 shadow-xs">
@@ -464,7 +439,6 @@ export default function SecretAdminPage() {
                   </div>
                 </div>
 
-                {/* XML Live Inspector */}
                 <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs flex flex-col">
                   <h3 className="text-sm font-bold text-slate-900 mb-1">
                     XML Response Inspector
@@ -488,7 +462,6 @@ export default function SecretAdminPage() {
               </div>
             )}
 
-            {/* TAB 2: pSEO Directory Explorer */}
             {activeTab === 'pseo' && (
               <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -545,7 +518,6 @@ export default function SecretAdminPage() {
               </div>
             )}
 
-            {/* TAB 3: PostgreSQL Architecture & Migration Schema */}
             {activeTab === 'database' && (
               <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-6">
                 <div>
@@ -554,7 +526,6 @@ export default function SecretAdminPage() {
                   </h2>
                   <p className="text-xs text-slate-600 mt-1">
                     The auth system follows a decoupled Adapter pattern (<code className="font-mono text-emerald-700">AuthProviderInterface</code>).
-                    Switching between in-memory mock and PostgreSQL requires zero refactoring of application business logic.
                   </p>
                 </div>
 
@@ -562,11 +533,10 @@ export default function SecretAdminPage() {
                   <div className="p-4 bg-emerald-50/60 rounded-xl border border-emerald-200">
                     <div className="flex items-center gap-2 text-emerald-800 font-bold text-xs mb-1">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                      <span>Current Mode: Modular Dev Provider</span>
+                      <span>Current Mode: Modular Auth Provider</span>
                     </div>
                     <p className="text-xs text-emerald-900 leading-relaxed">
-                      Active: <code className="font-mono">MockAdminAuthProvider</code>.
-                      Features rate-limiting, 5-attempt brute-force lockouts, signed HMAC-SHA256 tokens, and in-memory audit logs.
+                      Features rate-limiting, 5-attempt brute-force lockouts, signed HMAC-SHA256 tokens, and audit logs.
                     </p>
                   </div>
 
@@ -576,13 +546,11 @@ export default function SecretAdminPage() {
                       <span>PostgreSQL Plug-in Ready</span>
                     </div>
                     <p className="text-xs text-blue-900 leading-relaxed">
-                      Class: <code className="font-mono">PostgresAuthAdapter</code>.
-                      When PostgreSQL or Cloud SQL is provisioned, provide <code className="font-mono">DATABASE_URL</code> to automatically bind persistence.
+                      Provide <code className="font-mono">DATABASE_URL</code> to automatically bind persistence.
                     </p>
                   </div>
                 </div>
 
-                {/* Pre-Generated SQL Schema */}
                 <div>
                   <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">
                     Ready-to-Run PostgreSQL Migration Schema
@@ -594,7 +562,6 @@ export default function SecretAdminPage() {
               </div>
             )}
 
-            {/* TAB 4: Security & Audit Logs */}
             {activeTab === 'logs' && (
               <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs">
                 <div className="flex items-center justify-between mb-4">
