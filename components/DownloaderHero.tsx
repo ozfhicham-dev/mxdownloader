@@ -29,7 +29,7 @@ interface DownloaderHeroProps {
 }
 
 const SAMPLE_URLS = [
-  { label: 'TikTok Video', url: 'https://www.tiktok.com/@creator/video/7291823901' },
+  { label: 'TikTok Video', url: 'https://www.tiktok.com/@tiktok/video/7106594312292453675' },
   { label: 'Instagram Reel', url: 'https://www.instagram.com/reel/C2-example/' },
   { label: 'Facebook Video', url: 'https://www.facebook.com/watch/?v=1089283749210294' },
   { label: 'YouTube Short', url: 'https://www.youtube.com/shorts/dQw4w9WgXcQ' },
@@ -45,9 +45,8 @@ export function DownloaderHero({
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [pasteSuccess, setPasteSuccess] = useState(false);
-  const [activePlatform, setActivePlatform] = useState(initialPlatform);
+  const [, setActivePlatform] = useState(initialPlatform);
 
-  // Directly stores the backend parsed result for immediate display right below input box
   const [parsedData, setParsedData] = useState<ParsedMediaResult | null>(null);
   const [activeDownloadId, setActiveDownloadId] = useState<string | null>(null);
   const [downloadSuccessList, setDownloadSuccessList] = useState<string[]>([]);
@@ -78,13 +77,12 @@ export function DownloaderHero({
   const handleDownloadSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
 
-    const targetUrl = url.trim() || 'https://www.facebook.com/watch/?v=1089283749210294';
+    const targetUrl = url.trim() || 'https://www.tiktok.com/@tiktok/video/7106594312292453675';
 
     setLoading(true);
     onError(null);
 
     try {
-      // 1. Fetch from the backend API route /api/download
       const res = await fetch('/api/download', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -99,7 +97,6 @@ export function DownloaderHero({
       const media: ParsedMediaResult = data.media;
       setParsedData(media);
 
-      // Convert to ResolvedMedia for sync with outer page sections if needed
       const videoOptions: MediaStreamOption[] = media.downloads
         .filter((d) => d.type === 'video')
         .map((d) => ({
@@ -111,7 +108,8 @@ export function DownloaderHero({
           fileSize: d.size,
           hasAudio: true,
           recommended: d.recommended,
-        }));
+          url: d.downloadUrl,
+        } as MediaStreamOption));
 
       const audioOptions: MediaStreamOption[] = media.downloads
         .filter((d) => d.type === 'audio')
@@ -124,7 +122,8 @@ export function DownloaderHero({
           fileSize: d.size,
           hasAudio: true,
           recommended: d.recommended,
-        }));
+          url: d.downloadUrl,
+        } as MediaStreamOption));
 
       const resolved: ResolvedMedia = {
         url: media.url,
@@ -151,33 +150,27 @@ export function DownloaderHero({
     }
   };
 
-  // Direct trigger for clicking individual quality buttons
   const triggerQualityDownload = (option: DownloadQualityOption) => {
     setActiveDownloadId(option.id);
 
-    // Realistic quick packaging buffer
-    setTimeout(() => {
-      const a = document.createElement('a');
-      a.href = option.downloadUrl;
-      a.download = `[mxdownloader.com]_${option.quality}_${option.format.toLowerCase()}.${option.format.toLowerCase()}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+    const a = document.createElement('a');
+    a.href = option.downloadUrl;
+    a.download = `[mxdownloader.com]_${option.quality}_${option.format.toLowerCase()}.${option.format.toLowerCase()}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 
-      setDownloadSuccessList((prev) => [...prev, option.id]);
-      setTimeout(() => {
-        setActiveDownloadId(null);
-      }, 1000);
-    }, 600);
+    setDownloadSuccessList((prev) => [...prev, option.id]);
+    setTimeout(() => {
+      setActiveDownloadId(null);
+    }, 1000);
   };
 
   return (
     <section className="relative pt-10 pb-16 md:pt-14 md:pb-20 overflow-hidden bg-white border-b border-slate-200/60">
-      {/* Background subtle radial gradient */}
       <div className="absolute inset-0 bg-[radial-gradient(#10b98115_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none opacity-60" />
 
       <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Editorial Headline */}
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 text-balance leading-tight sm:leading-tight">
           {initialTitle}
         </h1>
@@ -186,7 +179,6 @@ export function DownloaderHero({
           {initialSubheading}
         </p>
 
-        {/* Input Form Box */}
         <div id="downloader-input" className="mt-8 sm:mt-10 max-w-3xl mx-auto">
           <form
             onSubmit={handleDownloadSubmit}
@@ -198,7 +190,7 @@ export function DownloaderHero({
                   type="url"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  placeholder={`Paste video or audio URL (TikTok, Instagram, Facebook)...`}
+                  placeholder="Paste video or audio URL (TikTok, Instagram, Facebook)..."
                   className="w-full px-4 py-3 sm:py-3.5 text-sm sm:text-base text-slate-900 bg-transparent placeholder:text-slate-400 focus:outline-none"
                   required
                 />
@@ -237,7 +229,6 @@ export function DownloaderHero({
                 </button>
               </div>
 
-              {/* Primary Download Button */}
               <button
                 type="submit"
                 disabled={loading}
@@ -258,7 +249,6 @@ export function DownloaderHero({
             </div>
           </form>
 
-          {/* Clean Download Buttons Panel (Appears Right Below Input Box) */}
           {parsedData && (
             <div className="mt-5 p-4 sm:p-5 bg-white rounded-2xl border border-emerald-500/30 shadow-lg shadow-emerald-500/5 text-left animate-in fade-in slide-in-from-top-3 duration-250">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-100">
@@ -309,7 +299,6 @@ export function DownloaderHero({
                 </button>
               </div>
 
-              {/* Clean Download Quality Buttons */}
               <div>
                 <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2.5">
                   Available Download Qualities (Video & Audio):
@@ -396,7 +385,6 @@ export function DownloaderHero({
             </div>
           )}
 
-          {/* Quick 1-click test links */}
           <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5 text-xs text-slate-500">
             <span className="flex items-center gap-1 font-medium text-slate-600">
               <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
@@ -426,7 +414,6 @@ export function DownloaderHero({
           </div>
         </div>
 
-        {/* Quiet Meta Trust Line without AI pills */}
         <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-xs text-slate-500">
           <span>Full HD 1080p & 4K</span>
           <span aria-hidden="true">·</span>

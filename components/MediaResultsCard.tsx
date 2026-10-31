@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import {
-  Download,
   Video,
   Music,
   Check,
@@ -49,11 +48,19 @@ export function MediaResultsCard({ media }: MediaResultsCardProps) {
       clearInterval(interval);
       setDownloadProgress(100);
 
-      // Pass real target URL to the file streaming endpoint
-      const targetUrl = (option as unknown as { url?: string }).url || (media as unknown as { sourceUrl?: string }).sourceUrl || '';
-      const downloadUrl = `/api/download/file?url=${encodeURIComponent(targetUrl)}&format=${option.format.toLowerCase()}&quality=${encodeURIComponent(
-        option.quality
-      )}&title=${encodeURIComponent(media.title)}`;
+      // Avoid double-wrapping if the URL is already a proxy path from /api/download
+      const rawTargetUrl =
+        (option as unknown as { url?: string }).url ||
+        (media as unknown as { sourceUrl?: string }).sourceUrl ||
+        '';
+
+      const downloadUrl = rawTargetUrl.startsWith('/api/download/file')
+        ? rawTargetUrl
+        : `/api/download/file?url=${encodeURIComponent(
+            rawTargetUrl
+          )}&format=${option.format.toLowerCase()}&quality=${encodeURIComponent(
+            option.quality
+          )}&title=${encodeURIComponent(media.title)}`;
 
       const a = document.createElement('a');
       a.href = downloadUrl;
