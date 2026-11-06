@@ -2,7 +2,6 @@
   import '../app.css';
   import { Download, Globe } from 'lucide-svelte';
   import { I18N, currentLocale } from '$lib/i18n/public';
-
   $: t = I18N[$currentLocale];
 </script>
 
@@ -35,9 +34,7 @@
     </div>
   </header>
 
-  <main class="flex-1">
-    <slot />
-  </main>
+  <main class="flex-1"><slot /></main>
 
   <footer class="bg-white border-t border-slate-200 text-xs text-slate-500 py-6 text-center">
     © 2026 mxdownloader.com · {t.allRights}
