@@ -1,6 +1,0 @@
-{
-  "name": "mxdownloader",
-  "description": "High-speed, universal video and audio downloader for Facebook, Instagram, TikTok, YouTube, and X. Supports 4K, Full HD, and 320kbps MP3 downloads.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

@@ -1,0 +1,1 @@
+export const GET = () => new Response('User-agent: *\nAllow: /\nSitemap: https://mxdownloader.com/sitemap.xml', { headers: { 'Content-Type': 'text/plain' } });

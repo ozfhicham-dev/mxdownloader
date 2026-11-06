@@ -1,0 +1,37 @@
+CREATE TABLE IF NOT EXISTS admin_users (
+  id VARCHAR(64) PRIMARY KEY,
+  username VARCHAR(64) UNIQUE NOT NULL,
+  email VARCHAR(255) UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(32) NOT NULL DEFAULT 'superadmin',
+  failed_attempts INT DEFAULT 0,
+  locked_until TIMESTAMP WITH TIME ZONE NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  last_login_at TIMESTAMP WITH TIME ZONE NULL
+);
+
+CREATE TABLE IF NOT EXISTS admin_audit_logs (
+  id VARCHAR(64) PRIMARY KEY,
+  timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  action VARCHAR(64) NOT NULL,
+  username VARCHAR(64) NOT NULL,
+  ip_address VARCHAR(45),
+  success BOOLEAN NOT NULL,
+  details TEXT
+);
+
+CREATE TABLE IF NOT EXISTS pseo_pages (
+  slug VARCHAR(255) PRIMARY KEY,
+  platform VARCHAR(64) NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  h1 VARCHAR(255) NOT NULL,
+  subheading TEXT NOT NULL,
+  description TEXT NOT NULL,
+  media_type VARCHAR(32) NOT NULL DEFAULT 'both',
+  format VARCHAR(16) NOT NULL DEFAULT 'MP4',
+  quality VARCHAR(64) NOT NULL DEFAULT '1080p Full HD',
+  keywords TEXT[] DEFAULT '{}',
+  faqs JSONB DEFAULT '[]',
+  is_indexed BOOLEAN NOT NULL DEFAULT true,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
